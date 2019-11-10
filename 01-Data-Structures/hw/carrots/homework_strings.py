@@ -32,27 +32,76 @@
 P.S. За незакрытый файловый дескриптор - караем штрафным дезе.
 
 """
+import matplotlib.pyplot as plt
+
 
 # read the file dna.fasta
-dna = None
+with open('./files/dna.fasta', 'r+') as dna_fasta:
+    dna_dict = {}
+    for dna_str in dna_fasta:
+        if dna_str.startswith('>'):
+            dna_key = dna_str.strip()
+            dna_dict[dna_key] = []
+        else:
+            dna_dict[dna_key].append(dna_str.strip())
+
+
+# read the file rna_codon_table.txt
+with open('./files/rna_codon_table.txt', 'r+') as rna_codon_table:
+    rna_codon_table = rna_codon_table.read().split()
 
 
 def translate_from_dna_to_rna(dna):
-    
-    """your code here"""
+    translation = {'A': 'U', 'T': 'A', 'C': 'G', 'G': 'C'}
+    rna = {}
+
+    for key in dna:
+        rna_key = key
+        rna[rna_key] = []
+        for string in dna[key]:
+            rna[rna_key].append(f"{''.join(translation[i] for i in string)}")
     
     return rna
 
 
+with open('translate_from_dna_to_rna.txt', 'tw') as f:
+    print(translate_from_dna_to_rna(dna_dict), file=f)
+
+
 def count_nucleotides(dna):
-    
-    """your code here"""
-    
+    num_of_nucleotides = ''
+
+    for key in dna:
+        num_of_nucleotides += f"{key}\n"
+        value = ''
+        for string in dna[key]:
+            value += string
+        num_of_nucleotides += f"[A - {value.count('A')}, C - {value.count('C')}, " \
+                              f"G - {value.count('G')}, T - {value.count('T')}]\n"
+
     return num_of_nucleotides
 
 
+with open('count_nucleotides.txt', 'tw') as f:
+    print(count_nucleotides(dna_dict), file=f)
+
+
 def translate_rna_to_protein(rna):
-    
-    """your code here"""
-    
+    protein = {}
+    codon = dict(zip(rna_codon_table[::2], rna_codon_table[1::2]))
+
+    for key in rna:
+        protein_key = key
+        protein[protein_key] = []
+        for string in rna[key]:
+            string = [string[i:i + 3] for i in range(0, len(string), 3)]
+            for i in string:
+                if len(i) == 3:
+                    protein[protein_key] += codon[i]
+                    protein[protein_key] = ''.join(protein[key])
+
     return protein
+
+
+with open('translate_rna_to_protein.txt', 'tw') as f:
+    print(translate_rna_to_protein(translate_from_dna_to_rna(dna_dict)), file=f)
