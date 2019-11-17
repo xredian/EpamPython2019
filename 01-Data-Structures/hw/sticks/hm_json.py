@@ -4,9 +4,6 @@ with open('winedata_1.json', 'r') as f:
 with open('winedata_2.json', 'r') as f:
     winedata_2 = f.read()
 
-with open('1.json', 'r') as f:
-    one = f.read()
-
 
 def parser(json):
     data = []
@@ -43,13 +40,21 @@ winedata_2 = parser(winedata_2)
 winedata_full = merge(winedata_1, winedata_2)
 sorted_full_data = sort_inf(winedata_full)
 
-'''with open('winedata_full.json', 'tw', encoding='utf-8') as out:
-    for i in range(len(sorted_full_data)):
-        n = set('{')
-        for key, val in sorted_full_data[i].items():
-            out.write(f'{key}:{val}, ')
-            n.add(f'{key}:{val}, ')
-        out.write(f'{n},\n')'''
 
 with open('winedata_full.json', 'tw', encoding='utf-8') as out:
-    out.write(str(sorted_full_data))
+    out.write('[')
+    for line in winedata_full:
+        out.write(f'{line},\n')
+    size = out.tell()
+    out.truncate(size - 2)
+    out.write(']')
+
+
+varietes = ['Gew\\u00fcrztraminer', 'Riesling', 'Merlot', 'Madera', 'Tempranillo', 'Red Blend']
+info = ['avarege_price', 'min_price', 'max_price', 'most_common_region', 'most_common_country', 'avarage_score']
+for_statistics = {}
+for item in varietes:
+    for_statistics[item] = {}
+    for key in info:
+        for_statistics[item][key] = 0
+
