@@ -32,7 +32,6 @@
 P.S. За незакрытый файловый дескриптор - караем штрафным дезе.
 
 """
-import matplotlib.pyplot as plt
 
 
 # read the file dna.fasta
@@ -56,16 +55,21 @@ def translate_from_dna_to_rna(dna):
     rna = {}
 
     for key in dna:
-        rna_key = key
-        rna[rna_key] = []
+        rna[key] = []
         for string in dna[key]:
-            rna[rna_key].append(f"{''.join(translation[i] for i in string)}")
+            rna[key].append(f"{''.join(translation[i] for i in string)}")
     
     return rna
 
 
-with open('translate_from_dna_to_rna.txt', 'tw') as f:
-    print(translate_from_dna_to_rna(dna_dict), file=f)
+file1 = translate_from_dna_to_rna(dna_dict)
+with open('translate_from_dna_to_rna.json', 'tw', encoding='utf-8') as f:
+    f.write('[')
+    for key in file1:
+        f.write(f'{{"{str(key)}": "{str(file1[key]).strip("[").strip("]")}}}",\n')
+    size = f.tell()
+    f.truncate(size - 2)
+    f.write(']')
 
 
 def count_nucleotides(dna):
@@ -82,8 +86,10 @@ def count_nucleotides(dna):
     return num_of_nucleotides
 
 
-with open('count_nucleotides.txt', 'tw') as f:
-    print(count_nucleotides(dna_dict), file=f)
+file2 = count_nucleotides(dna_dict)
+with open('count_nucleotides.txt', 'tw', encoding='utf-8') as f:
+    for line in file2.split('\n'):
+        f.write(line + '\n')
 
 
 def translate_rna_to_protein(rna):
@@ -103,5 +109,11 @@ def translate_rna_to_protein(rna):
     return protein
 
 
-with open('translate_rna_to_protein.txt', 'tw') as f:
-    print(translate_rna_to_protein(translate_from_dna_to_rna(dna_dict)), file=f)
+file3 = translate_rna_to_protein(translate_from_dna_to_rna(dna_dict))
+with open('translate_rna_to_protein.json', 'tw', encoding='utf-8') as f:
+    f.write('[')
+    for key in file3:
+        f.write(f'{{"{str(key)}": "{str(file3[key])}}}",\n')
+    size = f.tell()
+    f.truncate(size - 2)
+    f.write(']')
