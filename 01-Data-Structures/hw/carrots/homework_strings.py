@@ -32,6 +32,7 @@
 P.S. За незакрытый файловый дескриптор - караем штрафным дезе.
 
 """
+import matplotlib.pyplot as plt
 
 
 # read the file dna.fasta
@@ -74,7 +75,6 @@ with open('translate_from_dna_to_rna.json', 'tw', encoding='utf-8') as f:
 
 def count_nucleotides(dna):
     num_of_nucleotides = ''
-
     for key in dna:
         num_of_nucleotides += f"{key}\n"
         value = ''
@@ -82,6 +82,19 @@ def count_nucleotides(dna):
             value += string
         num_of_nucleotides += f"[A - {value.count('A')}, C - {value.count('C')}, " \
                               f"G - {value.count('G')}, T - {value.count('T')}]\n"
+        data = [value.count('A'), value.count('C'), value.count('G'), value.count('T')]
+        fig, ax = plt.subplots()
+        plt.bar(['A', 'C', 'G', 'T'], data)
+        ax.set_title(str(key))
+        ax.set_ylabel('Quantity')
+        ax.set_xlabel('Nucleotides')
+        x_labels = data
+        rects = ax.patches
+        for rect, label in zip(rects, x_labels):
+            height = rect.get_height()
+            ax.text(rect.get_x() + rect.get_width() / 2, height + 5, label,
+                    ha='center', va='bottom')
+        plt.show()
 
     return num_of_nucleotides
 
