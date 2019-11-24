@@ -1,5 +1,5 @@
 # Statistics: #
-## Wine:##
+## Wine:
 
 
 
@@ -549,4 +549,4 @@ average_price: 35.89497987212882
 	Peru	: 83.5625
 
 
-## Most active commentator: ##Roger Voss
+## Most active commentator: Roger Voss
