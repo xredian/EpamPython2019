@@ -1,5 +1,5 @@
-# Statistics:
-## Wine:
+# Statistics: #
+## Wine:##
 
 
 
@@ -78,13 +78,13 @@ average_price: 35.89497987212882
 
 
 
-## Most expensive wine:
+## Most expensive wine: ##
 
 
 	Ch\\u00e2teau les Ormes Sorbet 2013  M\\u00e9doc	: 3300
 
 
-## Cheapest wine:
+## Cheapest wine: ##
 
 
 	Felix Solis 2013 Flirty Bird Syrah (Vino de la Tierra de Castilla)	: 4
@@ -99,7 +99,7 @@ average_price: 35.89497987212882
  	Cramele Recas 2011 UnWineD Pinot Grigio (Viile Timisului)	: 4
 
 
-## Highest score:
+## Highest score: ##
 
 
 	Chambers Rosewood Vineyards NV Rare Muscat (Rutherglen)	: 100
@@ -123,7 +123,7 @@ average_price: 35.89497987212882
  	Cayuse 2008 Bionic Frog Syrah (Walla Walla Valley (WA))	: 100
 
 
-## Lowest score:
+## Lowest score: ##
 
 
 	Viniverde 2011 Estreia Ros\\u00e9 (Vinho Verde)	: 80
@@ -525,28 +525,28 @@ average_price: 35.89497987212882
  	Reyter 2009 Finca La Martina Chardonnay (Mendoza)	: 80
 
 
-## Most expensive country:
+## Most expensive country: ##
 
 
 	Switzerland	: 85.28571428571429
 
 
-## Cheapest country:
+## Cheapest country: ##
 
 
 	Ukraine	: 9.214285714285714
 
 
-## Most rated country:
+## Most rated country: ##
 
 
 	England	: 91.58108108108108
 
 
-##  Underrated country:
+## Underrated country: ##
 
 
 	Peru	: 83.5625
 
 
-## Most active commentator:Roger Voss
+## Most active commentator: ##Roger Voss
