@@ -197,7 +197,7 @@ most_active_commentator = Counter(taster_names).most_common()[0][0]
 
 
 # запись в файл stats.json
-with open('./stats.json', 'w') as f:
+with open('stats.json', 'w') as f:
     f.write('{"statistics": ')
     f.write('{"wine": ')
     f.write(str(for_statistics).replace('\'', '"'))
@@ -215,31 +215,34 @@ with open('./stats.json', 'w') as f:
 
 def markdown(item):
 
-    replaces = (('{', '\n\n'), (",", '\n'), ('}', '\n\n'))
+    replaces = (('{', '\n\n\n'), (',', '\n'), ('}', '\n\n\n'), ('"', '\t'),
+                ("'", ''))
     for replace in replaces:
         item = str(item).replace(*replace)
 
     return item
 
 
-with open('./stats.md', 'w') as f:
-    f.write('Statistics: \nWine:')
+with open('stats.md', 'w') as f:
+    f.write('#Statistics:\n')
+    f.write('##Wine:')
     f.write(markdown(common_stats))
-    f.write('most_expensive_wine:')
+    f.write('##Most expensive wine:')
     f.write(markdown(most_expensive_wine))
-    f.write('cheapest_wine:')
+    f.write('##Cheapest wine:')
     f.write(markdown(cheapest_wine))
-    f.write('highest_score:')
+    f.write('##Highest score:')
     f.write(markdown(highest_score))
-    f.write('lowest_score:')
+    f.write('##Lowest score:')
     f.write(markdown(lowest_score))
-    f.write('most_expensive_country:')
+    f.write('##Most expensive country:')
     f.write(markdown(most_expensive_country))
-    f.write('cheapest_country:')
+    f.write('##Cheapest country:')
     f.write(markdown(cheapest_country))
-    f.write('most_rated_country:')
+    f.write('##Most rated country:')
     f.write(markdown(most_rated_country))
-    f.write('underrated_country:')
+    f.write('##Underrated country:')
     f.write(markdown(underrated_country))
-    f.write('most_active_commentator:')
+    f.write('##Most active commentator:')
     f.write(markdown(most_active_commentator))
+
