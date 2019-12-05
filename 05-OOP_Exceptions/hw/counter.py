@@ -11,8 +11,27 @@ reset_instances_counter - сбросить счетчик экземпляров
 
 
 def instances_counter(cls):
-    """Some code"""
-    return cls
+
+    class Wrapper:
+
+        counter = 0
+
+        def __new__(cls, *args, **kwargs):
+            cls.counter += 1
+            instance = super().__new__(cls)
+            return instance
+
+        @classmethod
+        def get_created_instances(cls):
+            return cls.counter
+
+        @classmethod
+        def reset_instances_counter(cls):
+            last_counter = cls.counter
+            cls.counter = 0
+            return last_counter
+
+    return Wrapper
 
 
 @instances_counter
@@ -22,7 +41,7 @@ class User:
 
 if __name__ == '__main__':
 
-    User.get_created_instances()  # 0
+    print(User.get_created_instances())  # 0
     user, _, _ = User(), User(), User()
-    user.get_created_instances()  # 3
-    user.reset_instances_counter()  # 3
+    print(user.get_created_instances())  # 3
+    print(user.reset_instances_counter())  # 3
