@@ -208,10 +208,15 @@ with open('stats.json', 'w') as f:
     f.write('{"wine":\n{')
     for key in for_statistics:
         f.write(f'"{key}":\n')
-        f.write('{},\n'.format(str(for_statistics[key]).replace("\'", '\"')))
+        f.write('{},\n'.format(str(for_statistics[key]).replace(
+            "': '", '": "').replace("'}", '"}').replace(
+            "{'", '{"').replace("', '", '", "').replace(
+            "': None, '", '": "None", "')))
     for key in stats_dict:
         f.write(f'"{key}":\n')
-        f.write('{},\n'.format(str(stats_dict[key]).replace("\'", '\"')))
+        f.write('{},\n'.format(str(stats_dict[key]).replace(
+            "': ", '": ').replace(": '", ': "').replace("'}", '"}').replace(
+            "{'", '{"').replace(", '", ', "').replace("', ", '", ')))
     f.write('}}}')
 
 
@@ -228,6 +233,6 @@ def markdown(item):
 with open('stats.md', 'w') as f:
     f.write(markdown(f'# Statistics: #\n## Wine:\n{common_stats}\n'))
     for key in stats_dict:
-        f.write(markdown('##{}##'.format(key)))
+        f.write(markdown('## {} ##'.format(key)))
         f.write(markdown(stats_dict[key]))
 
