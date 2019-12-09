@@ -211,7 +211,7 @@ with open('stats.json', 'w') as f:
         f.write('{},\n'.format(str(for_statistics[key]).replace(
             "': '", '": "').replace("'}", '"}').replace(
             "{'", '{"').replace("', '", '", "').replace(
-            "': None, '", '": "None", "')))
+            "': None, '", '": "None", "').replace("': None", '": "None"')))
     for key in stats_dict:
         f.write(f'"{key}":\n')
         f.write('{},\n'.format(str(stats_dict[key]).replace(
