@@ -83,12 +83,12 @@ def stats(variety, stat,  winedata):
             if wine['points'] != '0':
                 average_score.append(int(wine['points']))
     try:
-        stat['average_price'] = statistics.mean(prices)
-        stat['max_price'] = max(prices)
-        stat['min_price'] = min(prices)
-        stat['most_common_region'] = Counter(most_com_region).most_common()[0][0]
-        stat['most_common_country'] = Counter(most_com_country).most_common()[0][0]
-        stat['average_score'] = statistics.mean(average_score)
+        stat['average_price'] = f'{statistics.mean(prices)}'
+        stat['max_price'] = f'{max(prices)}'
+        stat['min_price'] = f'{min(prices)}'
+        stat['most_common_region'] = f'{Counter(most_com_region).most_common()[0][0]}'
+        stat['most_common_country'] = f'{Counter(most_com_country).most_common()[0][0]}'
+        stat['average_score'] = f'{statistics.mean(average_score)}'
     except statistics.StatisticsError:
         None
 
@@ -100,7 +100,7 @@ for wine in for_statistics:
     stats(wine, for_statistics[wine], winedata_full)
 
 common_stats = for_statistics
-
+stats_dict = {}
 
 # наиболее дешевые и дорогие вина
 names = []
@@ -116,9 +116,10 @@ max_index = np.where(prices == max(prices))[0]
 min_index = np.where(prices == min(prices))[0]
 
 
-most_expensive_wine = {f"{names[i]}'": prices[i] for i in max_index}
-cheapest_wine = {f"{names[i]}'": prices[i] for i in min_index}
-
+most_expensive_wine = {f"{names[i]}": f"{prices[i]}" for i in max_index}
+cheapest_wine = {f"{names[i]}": f"{prices[i]}" for i in min_index}
+stats_dict['most_expensive_wine'] = most_expensive_wine
+stats_dict['cheapest_wine'] = cheapest_wine
 
 # вина с высшей и низшей оценкой
 names = []
@@ -133,9 +134,10 @@ scores = np.array(scores)
 max_index = np.where(scores == max(scores))[0]
 min_index = np.where(scores == min(scores))[0]
 
-highest_score = {f"{names[i]}'": scores[i] for i in max_index}
-lowest_score = {f"{names[i]}'": scores[i] for i in min_index}
-
+highest_score = {f"{names[i]}": f"{scores[i]}" for i in max_index}
+lowest_score = {f"{names[i]}": f"{scores[i]}" for i in min_index}
+stats_dict['highest_score'] = highest_score
+stats_dict['lowest_score'] = lowest_score
 
 # в среднем самое дорогое и дешевое вино среди стран
 countries = []
@@ -157,9 +159,10 @@ means = np.array(means)
 max_index = np.where(means == max(means))[0]
 min_index = np.where(means == min(means))[0]
 
-most_expensive_country = {f"{countries[i]}'": means[i] for i in max_index}
-cheapest_country = {f"{countries[i]}'": means[i] for i in min_index}
-
+most_expensive_country = {f"{countries[i]}": f"{means[i]}" for i in max_index}
+cheapest_country = {f"{countries[i]}": f"{means[i]}" for i in min_index}
+stats_dict['most_expensive_country'] = most_expensive_country
+stats_dict['cheapest_country'] = cheapest_country
 
 # most_rated_country & underrated_country
 countries = []
@@ -182,9 +185,10 @@ means = np.array(means)
 max_index = np.where(means == max(means))[0]
 min_index = np.where(means == min(means))[0]
 
-most_rated_country = {f"{countries[i]}'": means[i] for i in max_index}
-underrated_country = {f"{countries[i]}'": means[i] for i in min_index}
-
+most_rated_country = {f"{countries[i]}": f"{means[i]}" for i in max_index}
+underrated_country = {f"{countries[i]}": f"{means[i]}" for i in min_index}
+stats_dict['most_rated_country'] = most_rated_country
+stats_dict['underrated_country'] = underrated_country
 
 # most_active_commentator
 taster_names = []
@@ -194,23 +198,21 @@ for wine in winedata_full:
         taster_names.append(wine['taster_name'])
 
 most_active_commentator = Counter(taster_names).most_common()[0][0]
+stats_dict['most_active_commentator'] = f'"{most_active_commentator}"'
+print(stats_dict)
 
 
 # запись в файл stats.json
 with open('stats.json', 'w') as f:
     f.write('{"statistics": ')
-    f.write('{"wine": ')
-    f.write(str(for_statistics).replace('\'', '"'))
-    f.write(f',"most_expensive_wine": {most_expensive_wine}, ')
-    f.write(f'"cheapest_wine": {cheapest_wine}, ')
-    f.write(f'"highest_score": {highest_score}, ')
-    f.write(f'"lowest_score": {lowest_score}, ')
-    f.write(f'"most_expensive_country": {most_expensive_country}, ')
-    f.write(f'"cheapest_country": {cheapest_country}, ')
-    f.write(f'"most_rated_country": {most_rated_country}, ')
-    f.write(f'"underrated_country": {underrated_country}, ')
-    f.write(f'"most_active_commentator": "{most_active_commentator}"')
-    f.write('}}')
+    f.write('{"wine":\n{')
+    for key in for_statistics:
+        f.write(f'"{key}":\n')
+        f.write('{},\n'.format(str(for_statistics[key]).replace("\'", '\"')))
+    for key in stats_dict:
+        f.write(f'"{key}":\n')
+        f.write('{},\n'.format(str(stats_dict[key]).replace("\'", '\"')))
+    f.write('}}}')
 
 
 def markdown(item):
@@ -225,22 +227,7 @@ def markdown(item):
 
 with open('stats.md', 'w') as f:
     f.write(markdown(f'# Statistics: #\n## Wine:\n{common_stats}\n'))
-    f.write(markdown('## Most expensive wine: ##'))
-    f.write(markdown(most_expensive_wine))
-    f.write(markdown('## Cheapest wine: ##'))
-    f.write(markdown(cheapest_wine))
-    f.write(markdown('## Highest score: ##'))
-    f.write(markdown(highest_score))
-    f.write(markdown('## Lowest score: ##'))
-    f.write(markdown(lowest_score))
-    f.write(markdown('## Most expensive country: ##'))
-    f.write(markdown(most_expensive_country))
-    f.write(markdown('## Cheapest country: ##'))
-    f.write(markdown(cheapest_country))
-    f.write(markdown('## Most rated country: ##'))
-    f.write(markdown(most_rated_country))
-    f.write(markdown('## Underrated country: ##'))
-    f.write(markdown(underrated_country))
-    f.write(markdown('## Most active commentator: '))
-    f.write(markdown(most_active_commentator))
+    for key in stats_dict:
+        f.write(markdown('##{}##'.format(key)))
+        f.write(markdown(stats_dict[key]))
 
