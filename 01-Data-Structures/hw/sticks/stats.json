@@ -6,7 +6,7 @@
 "Merlot":
 {"average_price": "29.5342062193126", "min_price": "4", "max_price": "625", "most_common_region": "California", "most_common_country": "US", "average_score": "87.20452342487884"},
 "Madera":
-{"average_price": "None", "min_price": "None", "max_price": "None", "most_common_region": "None", "most_common_country": "None", "average_score': None},
+{"average_price": "None", "min_price": "None", "max_price": "None", "most_common_region": "None", "most_common_country": "None", "average_score": "None"},
 "Tempranillo":
 {"average_price": "31.15544332210999", "min_price": "4", "max_price": "600", "most_common_region": "Northern Spain", "most_common_country": "Spain", "average_score": "87.51303383250139"},
 "Red Blend":
