@@ -44,6 +44,7 @@ counter_1 = {'count': 0, 'duration': 0}
 counter_2 = {'count': 0, 'duration': 0}
 counter_3 = {'count': 0, 'duration': 0}
 
+
 fib2(5), counter_2
 fib2(10), counter_2
 print(fib2(25), counter_2)
