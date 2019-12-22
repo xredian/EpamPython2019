@@ -7,4 +7,16 @@ print("It's fine")
 
 
 class Suppressor:
-    pass
+    def __init__(self, *exceptions):
+        self.exceptions = exceptions
+
+    def __enter__(self):
+        pass
+
+    def __exit__(self, exctype, excvalue, tb):
+        return exctype is not None and issubclass(exctype, self.exceptions)
+
+
+with Suppressor(ZeroDivisionError):
+    print(1/0)
+print("It's fine")
