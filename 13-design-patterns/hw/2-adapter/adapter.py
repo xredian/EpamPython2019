@@ -108,6 +108,18 @@ def client_code(documents_handler):
     print(documents_handler.get_documents(document_ids[1]))
 
 
+class Adapter:
+    def __init__(self, documents_handler):
+        self.documents_handler = documents_handler
+
+    def upload_documents(self, documents):
+        documents = [document.replace('xml', 'json') for document in documents]
+        return self.documents_handler.upload_documents(documents)
+
+    def get_documents(self, document_ids):
+        return self.documents_handler.get_documents(document_ids)
+
+
 if __name__ == "__main__":
     class App:
         pass  # Упрощенная реализация сложного приложения
@@ -115,5 +127,5 @@ if __name__ == "__main__":
     app = App()
     app.documents_handler = DocumentsHandler(StoreService())
     # Реализуйте класс Adapter и раскомментируйте строку ниже
-    # app.documents_handler = Adapter(app.documents_handler)
+    app.documents_handler = Adapter(app.documents_handler)
     client_code(app.documents_handler)
