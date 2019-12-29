@@ -1,81 +1,137 @@
 class Building:
     def __init__(self, name, **kwargs):
+        """
+        :param name: name of a building
+        :param kwargs: kwargs
+        """
         self.storage = []
         self.name = name
 
 
 class Warehouse(Building):
-    def __init__(self, name, delivery_time):
-        super().__init__(name)
-        self.delivery_time = delivery_time
+    def __init__(self, deliv_time, **kwargs):
+        """
+        :param name: name of a building
+        :param deliv_time: delivery time needed to get from one point to another
+        :param kwargs: name and other kwargs from parent class
+        """
+        self.deliv_time = deliv_time
+        super().__init__(**kwargs)
 
-    def delivered(self, number_of_containers):
+    def delivery(self, number_of_containers):
+        """
+        Delivery indicator
+        :param number_of_containers: number of containers for delivery
+        :return: boolean values, if everything is delivered or not
+        """
         return len(self.storage) == number_of_containers
 
-    def get_cargo(self, container):
+    def add_cargo(self, container):
+        """
+        Adds container to the suitable storage
+        :param container: container type
+        :return: None
+        """
         self.storage.append(container)
+        print(f'Cargo {container} is delivered to the warehouse {self.name}')
 
 
 class Transport:
     def __init__(self, name):
-        self.destination = None
-        self.time = 0
-        self.at_the_factory = True
-        self.cargo = None
+        """
+        :param name: name of transport
+        """
         self.name = name
+        self.destination = None
+        self.cargo = None
+        self.starting_point = True
+        self.time = 0
 
     def move(self, destination: Warehouse, cargo):
+        """
+        Describes transport movement
+        :param destination: transport destination with a specific container type
+        :param cargo: type of a cargo
+        :return: None
+        """
         self.destination = destination
-        self.time = 2 * destination.delivery_time
-        self.at_the_factory = False
         self.cargo = cargo
+        self.time = 2 * destination.deliv_time
+        self.starting_point = False
 
     def stage(self):
-        if self.at_the_factory:
+        """
+        Indicate transport location
+        """
+        if self.starting_point:
+            print(f'{self.name} is at the starting point')
             return
         self.time -= 1
-        if self.time == self.destination.delivery_time:
-            self.destination.get_cargo(self.cargo)
-        if self.time == 0:
-            self.at_the_factory = True
+        if self.time == self.destination.deliv_time:
+            self.destination.add_cargo(self.cargo)
+            print(f'{self.name} arrived to destination point')
+        elif self.time == 0:
+            self.starting_point = True
+            print(f'{self.name} returned to the factory')
 
 
 class Factory(Building):
-    def __init__(self, name, containers, transport: list, warehouses, **kwargs):
-        super().__init__(name, **kwargs)
-        self.storage = list(containers)
+    def __init__(self, cont, transport: list, warehouses: dict, **kwargs):
+        """
+        :param cont: chain of containers to be delivered
+        :param transport: free transport
+        :param warehouses: dict of Building for different types of containers
+        :param kwargs: name and other kwargs from parent class
+        """
+        super().__init__(**kwargs)
+        self.storage = list(cont)
         self.transport = transport
         self.warehouses = warehouses
 
-    def delivery(self):
-        for transport in self.transport:
-            if transport.at_the_factory:
+    def assign_delivery(self):
+        """
+        Logging the assigning of transport for delivery
+        """
+        for one in self.transport:
+            if one.starting_point:
                 if self.storage:
-                    container = self.storage.pop(0)
-                    transport.move(self.warehouses[container], container)
+                    cont = self.storage.pop(0)
+                    one.move(self.warehouses[cont], cont)
+                    print(f'{one.name} took cargo {cont} from point {self.name}')
+                else:
+                    print(f'There is no cargo at point {self.name}')
+            else:
+                print(f'{one.name} is not at point {self.name}')
 
 
 class Port(Factory, Warehouse):
+    """
+    Inherited from Factory
+    """
     pass
 
 
 if __name__ == '__main__':
     containers = input('Input list of cargoes: ')
-    ship = Transport('Ship')
     truck1 = Transport('Truck 1')
     truck2 = Transport('Truck 2')
-    warehouseA = Warehouse('A', 4)
-    warehouseB = Warehouse('B', 5)
-    port = Port('Port', [], [ship], {'A': warehouseA}, delivery_time=1)
-    factory = Factory('Factory', containers, [truck1, truck2], {'A': port, 'B': warehouseB})
+    ship = Transport('Ship')
+    whA = Warehouse(name='A', deliv_time=4)
+    whB = Warehouse(name='B', deliv_time=5)
+    port = Port(name='Port', transport=[ship],
+                warehouses={'A': whA}, deliv_time=1, cont=[])
+    factory = Factory(name='Factory', transport=[truck1, truck2],
+                      warehouses={'A': port, 'B': whB},
+                      cont=containers)
     time = 1
     while True:
-        factory.delivery()
-        port.delivery()
+        print(f'\n###############\niteration {time}\n')
+        factory.assign_delivery()
+        port.assign_delivery()
         truck1.stage()
         truck2.stage()
         ship.stage()
-        if warehouseA.delivered(containers.count('A')) and warehouseB.delivered(containers.count('B')):
+        if whA.delivery(containers.count('A')) and whB.delivery(containers.count('B')):
             break
         time += 1
     print(f'Delivery time: {time}')
