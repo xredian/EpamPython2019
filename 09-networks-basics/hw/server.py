@@ -18,7 +18,11 @@ def handle_client(client):
     """Handles a single client connection."""
 
     name = client.recv(BUFSIZ).decode("utf8")
-    welcome = f'Welcome {name}! If you ever want to quit, type "quit" to exit.'
+    welcome = f'Welcome {name}! If you ever want to quit, ' \
+              f'type "^quit" to exit.\n' \
+              f'If you want to get list of participants, type ^list.\n' \
+              f'If you want to send private message,' \
+              f' type ^!name of participant and your message.'
     client.send(bytes(welcome, "utf8"))
     msg = f'{name} has joined the chat'
     broadcast(bytes(msg, 'utf8'))
@@ -26,14 +30,18 @@ def handle_client(client):
 
     while True:
         msg = client.recv(BUFSIZ)
-        if msg != bytes('quit', 'utf8'):
-            broadcast(msg, f'{name}: ')
-        else:
-            client.send(bytes('quit', 'utf8'))
+        if msg == bytes('^quit', 'utf8'):
+            client.send(bytes('^quit', 'utf8'))
             client.close()
             del clients[client]
             broadcast(bytes(f'{name} has left the chat', 'utf8'))
             break
+        elif msg == bytes('^list', 'utf8'):
+            participants(client)
+        elif msg.startswith(bytes('^!', 'utf8')):
+            private(client, msg)
+        else:
+            broadcast(msg, f'{name}: ')
 
 
 def broadcast(msg, prefix=''):
@@ -41,6 +49,23 @@ def broadcast(msg, prefix=''):
 
     for sock in clients:
         sock.send(bytes(prefix, 'utf8') + msg)
+
+
+def participants(client):
+
+    """Sending list of participants"""
+    names = list(clients.values())
+    participant = ', '.join(names)
+    client.send(bytes(participant, 'utf8'))
+
+
+def private(client, msg):
+
+    """Sending private messages"""
+    for recipient, name in clients.items():
+        if msg.startswith(bytes(f'^!{name}', 'utf8')):
+            message = f'Message from {clients[client]}:{str(msg[(len(name)+2):], "utf8")}'
+            recipient.send(bytes(message, 'utf8'))
 
 
 clients = {}
