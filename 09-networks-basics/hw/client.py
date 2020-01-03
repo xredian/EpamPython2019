@@ -17,7 +17,7 @@ client.connect(("localhost", 1111))
 thread = threading.Thread(target=receive).start()
 msg = ''
 
-while msg != 'quit':
+while msg != '^quit':
     msg = input()
     client.send(bytes(msg, 'utf8'))
 
