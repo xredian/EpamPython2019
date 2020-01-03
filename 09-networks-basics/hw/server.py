@@ -52,16 +52,16 @@ def broadcast(msg, prefix=''):
 
 
 def participants(client):
-
     """Sending list of participants"""
+
     names = list(clients.values())
     participant = ', '.join(names)
     client.send(bytes(participant, 'utf8'))
 
 
 def private(client, msg):
-
     """Sending private messages"""
+
     for recipient, name in clients.items():
         if msg.startswith(bytes(f'^!{name}', 'utf8')):
             message = f'Message from {clients[client]}:{str(msg[(len(name)+2):], "utf8")}'
