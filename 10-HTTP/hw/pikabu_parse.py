@@ -1,3 +1,10 @@
+"""
+File .env contains two variables:
+USERNAME = example_user_name
+PWD = example_password
+for authentication on pikabu.ru
+"""
+
 import requests
 import os
 from dotenv import load_dotenv
