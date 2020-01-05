@@ -56,18 +56,10 @@ class Quaternion:
         return (self.a**2 + self.b**2 + self.c**2 + self.d**2)**0.5
 
     def __truediv__(self, other):
-        if isinstance(other, Quaternion):
-            adjoint = Quaternion(other.a, - other.b, - other.c, - other.d)
-            norm = Quaternion.__abs__(other)**2
-            other = adjoint / norm
-            return Quaternion.__mul__(self, other)
-        elif isinstance(other, (float, int)):
-            if other == 0:
-                raise ZeroDivisionError
-            return Quaternion(self.a / other, self.b / other, self.c / other,
-                              self.d / other)
-        else:
-            raise TypeError
+        adjoint = Quaternion(other.a, - other.b, - other.c, - other.d)
+        norm = abs(other)**2
+        other = adjoint / norm
+        return self * other
 
     def __eq__(self, other):
         return (self.a, self.b, self.c, self.d) == (other.a, other.b, other.c,
@@ -77,4 +69,5 @@ class Quaternion:
         return f'{self.a} + {self.b}i + {self.c}j + {self.d}k'
 
     def __repr__(self):
-        return f'({self.a}, {self.b}, {self.c}, {self.d})'
+        return f'Quaternion({self.a}, {self.b}, {self.c}, {self.d})'
+
