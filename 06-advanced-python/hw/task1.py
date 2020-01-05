@@ -4,6 +4,7 @@ E - dict(<V> : [<V>, <V>, ...])
 значение - список вершин, достижимых из данной
 Сделать так, чтобы по графу можно было итерироваться(обходом в ширину)
 """
+from collections import deque
 
 
 class Graph:
@@ -12,21 +13,24 @@ class Graph:
 
     def __iter__(self):
         self.visited = {}
-        self.queue = [list(self.E.keys())[0]]
+        self.not_visited = list(self.E.keys())
+        self.queue = deque(self.not_visited[0])
         return self
 
     def __next__(self):
-        while self.queue:
-            vis = self.queue.pop(0)
-            self.visited[vis] = True
+        while self.not_visited:
+            if not self.queue:
+                self.queue.append(self.not_visited[0])
+            vis = self.queue.popleft()
+            if not self.visited.get(vis):
+                self.visited[vis] = True
+                self.not_visited.remove(vis)
             for elem in self.E[vis]:
-                if elem not in self.queue:
-                    try:
-                        if not self.visited[elem]:
-                            self.queue.append(elem)
-                    except KeyError:
-                        self.queue.append(elem)
-            return vis
+                if not self.visited.get(elem):
+                    self.visited[elem] = True
+                    self.not_visited.remove(elem)
+                    self.queue.append(elem)
+            return list(self.visited)
         raise StopIteration
 
 
@@ -35,4 +39,3 @@ graph = Graph(E)
 
 for vertex in graph:
     print(vertex)
-
