@@ -32,12 +32,13 @@ class Quaternion:
             raise TypeError
 
     def __mul__(self, other):
-        a1, a2 = self.a, other.a
-        b1, b2 = self.b, other.b
-        c1, c2 = self.c, other.c
-        d1, d2 = self.d, other.d
 
         if isinstance(other, Quaternion):
+
+            a1, a2 = self.a, other.a
+            b1, b2 = self.b, other.b
+            c1, c2 = self.c, other.c
+            d1, d2 = self.d, other.d
 
             a = a1 * a2 - b1 * b2 - c1 * c2 - d1 * d2
             b = a1 * b2 + b1 * a2 + c1 * d2 - d1 * c2
@@ -46,8 +47,8 @@ class Quaternion:
 
             return Quaternion(a, b, c, d)
 
-        elif isinstance(other, (float, int)):
-            return Quaternion(a1 * other, b1 * other, c1 * other, d1 * other)
+        elif isinstance(other, (int, float)):
+            return Quaternion(self.a * other, self.b * other, self.c * other, self.d * other)
 
         else:
             raise TypeError
